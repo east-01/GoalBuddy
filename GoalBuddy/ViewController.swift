@@ -8,12 +8,22 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var titleView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
     
     @IBOutlet weak var profileButton: UIButton!
     @IBOutlet weak var settingsButton: UIButton!
+    
+    @IBOutlet weak var bottomView: UIView!
+    @IBOutlet weak var bottomViewYLoc: NSLayoutConstraint!
+    @IBOutlet weak var bottomViewExpandButton: UIButton!
+    let BOTTOM_VIEW_YLOC_DEFAULT: CGFloat = -550
+    let BOTTOM_VIEW_YLOC_EXPANDED: CGFloat = 0
+    var isBottomViewExpanded: Bool = false
+    var startingPanHeight: CGFloat = 0
+    
+    @IBOutlet weak var goalView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +32,32 @@ class ViewController: UIViewController {
         titleView.layer.shadowOffset = CGSize(width: -10, height: 10)
         titleView.layer.shadowColor = UIColor.black.cgColor
         titleView.layer.shadowOpacity = 0.25
-     
-        titleLabel.text = "Hello world"
         
-//        profileButton.setImage(cropToBounds(image: UIImage(named: "ProfilePic")!, width: 5, height: 5), for: .normal)
+        titleLabel.text = getDateString()
+        
+        loadProfileImage();
+        
+        bottomView.layer.cornerRadius = 15
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler))
+        panGesture.maximumNumberOfTouches = 1
+        panGesture.minimumNumberOfTouches = 1
+        bottomView.addGestureRecognizer(panGesture)
+                
+        let newlabel: UILabel = UILabel()
+        newlabel.translatesAutoresizingMaskIntoConstraints = false
+        newlabel.text = "brother"
+        goalView.addSubview(newlabel)
+        
+        NSLayoutConstraint.activate([
+            goalView.centerXAnchor.constraint(equalTo: newlabel.centerXAnchor),
+            newlabel.topAnchor.constraint(equalTo: goalView.topAnchor, constant: 75)
+        ])
+        
+    }
+    
+    func loadProfileImage() {
+        
         let resizedImage = resizeImage(image: UIImage(named: "ProfilePic")!, newWidth: 50)
         let croppedImage = cropToBounds(image: resizedImage!, width: 50, height: 50)
         profileButton.setImage(croppedImage, for: .normal)
@@ -33,52 +65,57 @@ class ViewController: UIViewController {
         profileButton.clipsToBounds = true
         
     }
-
-    func cropToBounds(image: UIImage, width: Double, height: Double) -> UIImage {
-
-        let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
-
-        let contextSize: CGSize = contextImage.size
-
-        var posX: CGFloat = 0.0
-        var posY: CGFloat = 0.0
-        var cgwidth: CGFloat = CGFloat(width)
-        var cgheight: CGFloat = CGFloat(height)
-
-        // See what size is longer and create the center off of that
-        if contextSize.width > contextSize.height {
-            posX = ((contextSize.width - contextSize.height) / 2)
-            posY = 0
-            cgwidth = contextSize.height
-            cgheight = contextSize.height
-        } else {
-            posX = 0
-            posY = ((contextSize.height - contextSize.width) / 2)
-            cgwidth = contextSize.width
-            cgheight = contextSize.width
+    
+    @IBAction func expandButtonTapped(_ sender: Any) {
+        setBottomViewExpanded(isExpanded: !isBottomViewExpanded)
+    }
+    
+    @objc func panHandler(_ gestureRecognizer : UIPanGestureRecognizer) {
+        // Get loc and set the starting height if needed
+        let loc = gestureRecognizer.location(in: bottomView.superview!)
+        if(gestureRecognizer.state == .began) {
+            startingPanHeight = loc.y
         }
-
-        let rect: CGRect = CGRectMake(posX, posY, cgwidth, cgheight)
-
-        // Create bitmap image from context using the rect
-        let imageRef: CGImage = contextImage.cgImage!.cropping(to: rect)!
-
-        // Create a new image based on the imageRef and rotate back to the original orientation
-        let image: UIImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
-
-        return image
-    }
-
-    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage? {
-
-        let scale = newWidth / image.size.width
-        let newHeight = image.size.height * scale
-        UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
-        image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        // Calculate swipe offset
+        let offset: CGFloat = startingPanHeight - loc.y
+        var newYLoc = (isBottomViewExpanded ? BOTTOM_VIEW_YLOC_EXPANDED : BOTTOM_VIEW_YLOC_DEFAULT) + offset
+        // Make sure swipe stays in bounds
+        if(newYLoc > BOTTOM_VIEW_YLOC_EXPANDED) {
+            newYLoc = BOTTOM_VIEW_YLOC_EXPANDED
+        } else if(newYLoc < BOTTOM_VIEW_YLOC_DEFAULT) {
+            newYLoc = BOTTOM_VIEW_YLOC_DEFAULT
+        }
+        bottomViewYLoc.constant = CGFloat(newYLoc)
+        // Handle ending state
+        if(gestureRecognizer.state == .ended) {
+            // Default boolean checks the location of the height, if the velocity is high enough we will use that to determine willBeExpanded
+            var willBeExpanded = bottomViewYLoc.constant > (BOTTOM_VIEW_YLOC_EXPANDED - BOTTOM_VIEW_YLOC_DEFAULT) * 0.4 + BOTTOM_VIEW_YLOC_DEFAULT
+            if(abs(gestureRecognizer.velocity(in: bottomView.superview).y) > 50) {
+                willBeExpanded = gestureRecognizer.velocity(in: bottomView.superview).y < 0
+            }
+            setBottomViewExpanded(isExpanded: willBeExpanded)
+        }
         
-        return newImage
     }
+ 
+    func setBottomViewExpanded(isExpanded: Bool) {
+        isBottomViewExpanded = isExpanded
+        bottomViewYLoc.constant = CGFloat(isBottomViewExpanded ? BOTTOM_VIEW_YLOC_EXPANDED : BOTTOM_VIEW_YLOC_DEFAULT)
+        UIView.animate(withDuration: 0.25, delay: 0, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.1, animations: {
+                self.bottomViewExpandButton.imageView!.image = UIImage(systemName: !self.isBottomViewExpanded ? "chevron.compact.up" : "chevron.compact.down")
+            })
+        })
+    }
+ 
+    private func getDateString() -> String {
+        let date = Date()
+        let format = DateFormatter()
+        format.dateFormat = "MM/dd/yy"
+        return format.string(from: date)
+    }
+
 }
 
