@@ -48,11 +48,14 @@ class MainViewController: UIViewController {
                 
         loadGoalViews()
         
+        let goal: IntegerGoal = IntegerGoal(name: "bruh", weight: 1, value: 0, target: 50);
+        goal.printIntegerGoal()
+        
     }
     
     func loadProfileImage() {
         
-        let resizedImage = resizeImage(image: UIImage(named: "ProfilePic")!, newWidth: 50)
+        let resizedImage = resizeImage(image: UIImage(named: "ProfilePic")!, targetSize: CGSize(width: 50, height: 50))
         let croppedImage = cropToBounds(image: resizedImage!, width: 50, height: 50)
         profileButton.setImage(croppedImage, for: .normal)
         profileButton.layer.cornerRadius = 25
