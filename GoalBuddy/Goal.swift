@@ -31,6 +31,9 @@ class NumericGoal : Goal {
         self.reports = reports
         super.init(name: name, weight: weight)
     }
+    func getReports() -> [DataReport<Float>] {
+        return reports
+    }
 }
 
 struct DataReport<T> {
