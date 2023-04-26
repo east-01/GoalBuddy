@@ -36,4 +36,8 @@ class NumericGoal : Goal {
 struct DataReport<T> {
     let date: Date
     let data: T
+    init(date: Date, data: T) {
+        self.date = date
+        self.data = data
+    }
 }

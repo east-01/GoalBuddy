@@ -48,9 +48,6 @@ class MainViewController: UIViewController {
                 
         loadGoalViews()
         
-        let goal: IntegerGoal = IntegerGoal(name: "bruh", weight: 1, value: 0, target: 50);
-        goal.printIntegerGoal()
-        
     }
     
     func loadProfileImage() {
