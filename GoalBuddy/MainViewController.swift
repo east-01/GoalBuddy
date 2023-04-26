@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
     
     @IBOutlet weak var titleView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -23,8 +23,10 @@ class ViewController: UIViewController {
     var isBottomViewExpanded: Bool = false
     var startingPanHeight: CGFloat = 0
     
-    @IBOutlet weak var goalView: UIView!
-    
+    @IBOutlet weak var goalStackView: UIStackView!
+    @IBOutlet weak var goalStackViewHeight: NSLayoutConstraint!
+    var goalViews: [GoalView] = []
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,15 +46,7 @@ class ViewController: UIViewController {
         panGesture.minimumNumberOfTouches = 1
         bottomView.addGestureRecognizer(panGesture)
                 
-        let newlabel: UILabel = UILabel()
-        newlabel.translatesAutoresizingMaskIntoConstraints = false
-        newlabel.text = "brother"
-        goalView.addSubview(newlabel)
-        
-        NSLayoutConstraint.activate([
-            goalView.centerXAnchor.constraint(equalTo: newlabel.centerXAnchor),
-            newlabel.topAnchor.constraint(equalTo: goalView.topAnchor, constant: 75)
-        ])
+        loadGoalViews()
         
     }
     

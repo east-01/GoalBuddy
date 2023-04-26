@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GoalBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="GoalBuddy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -78,20 +78,36 @@
                                             <action selector="expandButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AFh-iE-Jp6"/>
                                         </connections>
                                     </button>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2ZC-3g-SUL">
-                                        <rect key="frame" x="0.0" y="45" width="390" height="545"/>
-                                        <color key="backgroundColor" name="BackgroundAccent"/>
-                                    </view>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zu8-zZ-Ixh">
+                                        <rect key="frame" x="5" y="50" width="380" height="530"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="m8a-iU-2j8">
+                                                <rect key="frame" x="0.0" y="0.0" width="380" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="25" id="0re-aa-7uh"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="m8a-iU-2j8" firstAttribute="centerX" secondItem="zu8-zZ-Ixh" secondAttribute="centerX" id="3py-QK-KLV"/>
+                                            <constraint firstItem="m8a-iU-2j8" firstAttribute="leading" secondItem="AcN-iB-cdW" secondAttribute="leading" id="7aF-Rd-qsV"/>
+                                            <constraint firstAttribute="trailing" secondItem="m8a-iU-2j8" secondAttribute="trailing" id="HHQ-Dk-3MI"/>
+                                            <constraint firstItem="m8a-iU-2j8" firstAttribute="top" secondItem="zu8-zZ-Ixh" secondAttribute="top" id="Mxy-jU-we2"/>
+                                            <constraint firstAttribute="bottom" secondItem="m8a-iU-2j8" secondAttribute="bottom" id="sX9-eK-hP0"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="contentLayoutGuide" id="yf9-qG-FJf"/>
+                                        <viewLayoutGuide key="frameLayoutGuide" id="AcN-iB-cdW"/>
+                                    </scrollView>
                                 </subviews>
                                 <color key="backgroundColor" name="BackgroundAccent"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="620" id="5ms-WJ-for"/>
+                                    <constraint firstAttribute="trailing" secondItem="zu8-zZ-Ixh" secondAttribute="trailing" constant="5" id="6Dp-0a-Vjd"/>
+                                    <constraint firstItem="zu8-zZ-Ixh" firstAttribute="leading" secondItem="x9d-X0-Lvi" secondAttribute="leading" constant="5" id="JFE-vr-o50"/>
+                                    <constraint firstItem="zu8-zZ-Ixh" firstAttribute="top" secondItem="Gqq-MZ-Wjg" secondAttribute="bottom" constant="10" id="LPV-9X-img"/>
                                     <constraint firstItem="Gqq-MZ-Wjg" firstAttribute="top" secondItem="x9d-X0-Lvi" secondAttribute="top" constant="5" id="O7z-7P-kln"/>
                                     <constraint firstItem="Gqq-MZ-Wjg" firstAttribute="centerX" secondItem="x9d-X0-Lvi" secondAttribute="centerX" id="T3d-xw-Jib"/>
-                                    <constraint firstAttribute="trailing" secondItem="2ZC-3g-SUL" secondAttribute="trailing" id="TEj-wb-q6H"/>
-                                    <constraint firstAttribute="bottom" secondItem="2ZC-3g-SUL" secondAttribute="bottom" constant="30" id="YbS-qE-qDV"/>
-                                    <constraint firstItem="2ZC-3g-SUL" firstAttribute="leading" secondItem="x9d-X0-Lvi" secondAttribute="leading" id="ce5-th-Mmm"/>
-                                    <constraint firstItem="2ZC-3g-SUL" firstAttribute="top" secondItem="Gqq-MZ-Wjg" secondAttribute="bottom" constant="5" id="kS3-Ff-QUO"/>
+                                    <constraint firstAttribute="bottom" secondItem="zu8-zZ-Ixh" secondAttribute="bottom" constant="40" id="prE-cH-pYw"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -110,7 +126,8 @@
                         <outlet property="bottomView" destination="x9d-X0-Lvi" id="yoF-1F-HuK"/>
                         <outlet property="bottomViewExpandButton" destination="Gqq-MZ-Wjg" id="hef-tm-wdG"/>
                         <outlet property="bottomViewYLoc" destination="rPf-Oc-dmL" id="Wdi-14-4gy"/>
-                        <outlet property="goalView" destination="2ZC-3g-SUL" id="kbe-ie-0oc"/>
+                        <outlet property="goalStackView" destination="m8a-iU-2j8" id="Dfm-AX-bFS"/>
+                        <outlet property="goalStackViewHeight" destination="0re-aa-7uh" id="qhk-8D-xOv"/>
                         <outlet property="profileButton" destination="FAV-P4-yfE" id="Tqe-6D-5aX"/>
                         <outlet property="settingsButton" destination="Oiz-gk-6Nm" id="emD-bH-BqE"/>
                         <outlet property="titleLabel" destination="YzY-dQ-uzq" id="R5d-nt-MaT"/>
